@@ -12,7 +12,7 @@ Tools used:
 
 ## Table of contents
 
-1. Continuous Integration With Jenkins
+1. [Continuous Integration With Jenkins](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#chapter-01-continuous-integration-with-jenkins)
 2. Continuous Delivery With Jenkins
 3. Jenkins Pipeline
 4. Jenkins With Docker
@@ -84,4 +84,21 @@ Tools used:
 **Continuous Deployment**
 
 > The deployment or release of code to production as soon as it is ready.
- 
+
+**_Jenkins Overview_**
+
+![JenkinsDashboard](JenkinsDashboard.PNG)
+
+- Jenkins is a continuous integration and build server written in Java
+- It is used to manually, periodically, or automatically build software development projects
+- Jenkins is used by teams of all different sizes, for projects with various languages
+
+Jenkins is very popular because:
+
+- Easy to use
+- Great extensibility:
+    - Support different version control systems
+    - Code quality metrics
+    - Build notifiers
+    - UI customization
+
