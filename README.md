@@ -13,6 +13,9 @@ Tools used:
 ## Table of contents
 
 1. [Continuous Integration With Jenkins](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#chapter-01-continuous-integration-with-jenkins)
+    - [Continuous Integration Overview](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#continuous-integration-overview)
+    - [Install Jenkins](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#install-jenkins)
+    - [Jenkins Overview](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#jenkins-overview)
 2. Continuous Delivery With Jenkins
 3. Jenkins Pipeline
 4. Jenkins With Docker
@@ -21,7 +24,7 @@ Tools used:
 
 ## Chapter 01. Continuous Integration With Jenkins
 
-**_Continuous Integration_**
+### Continuous Integration Overview
 
 ![JenkinsCI](JenkinsCI.PNG)
 
@@ -85,9 +88,27 @@ Tools used:
 
 > The deployment or release of code to production as soon as it is ready.
 
-**_Jenkins Overview_**
+### Install Jenkins
 
-![JenkinsDashboard](JenkinsDashboard.PNG)
+- Navigate to [Jenkins Download](https://www.jenkins.io/download/#downloading-jenkins)
+- Download Jenkins `2.426.3 LTS` for Windows: `jenkins.msi`
+- Install using the msi installer
+- Logon Type can be marked as: `Run service as LocalSystem`
+- Select all the defaults and install
+
+**Verify**
+
+- Launch on browser: `http://localhost:8080/`
+- The Login page will come where we need to type the admin password located at:
+
+`C:\ProgramData\Jenkins\.jenkins\secrets\initialAdminPassword`
+
+- Follow the defaults — we can skip all the plugin installations for now
+- Once the setup is complete, Jenkins dashboard will display
+- For now, click on `admin` user in the top-right and change the password in `Configure`
+- Jenkins will be logged in again with the new password
+
+### Jenkins Overview
 
 - Jenkins is a continuous integration and build server written in Java
 - It is used to manually, periodically, or automatically build software development projects
@@ -95,10 +116,70 @@ Tools used:
 
 Jenkins is very popular because:
 
-- Easy to use
-- Great extensibility:
+- Ease to use
+- Great extensibility via plugins:
     - Support different version control systems
     - Code quality metrics
     - Build notifiers
     - UI customization
+
+**_Jenkins Master-Slave Architecture_**
+
+![MasterSlave](MasterSlave.PNG)
+
+**Master:**
+
+- Schedule build jobs
+- Dispatch builds to the slaves for the actual job execution
+- Monitor the slaves and record the build results
+- Can also execute build jobs directly
+
+**Slave:**
+
+- Execute build jobs dispatched by the master
+
+**_Jenkins Terminology_**
+
+**Job or Project**
+
+- Those two terms are used interchangeably. They all refer to runnable tasks that are controlled / monitored by Jenkins.
+
+**Slave or Node**
+
+- Slaves are computers that are set up to build projects for a master
+- Jenkins runs a separate program called **"slave agent"** on slaves
+- When slaves are registered to a master, a master starts distributing loads to slaves
+- Node is used to refer to all machines that are part of Jenkins grid, slaves and master
+
+**Executor**
+
+- Executor is a separate stream of builds to be run on a node in parallel
+- A Node can have one or more executors
+
+**Build**
+
+- A build is a result of one of the projects
+
+**Plugin**
+
+- A Plugin, like plugins on any other system, is a piece of software that extends the core functionality of the core
+  Jenkins server
+
+**_Jenkins UI Overview_**
+
+![JenkinsDashboard](JenkinsDashboard.PNG)
+
+- The Main Dashboard will display all the jobs, also called as `Job Table`
+- Left pane consists of `Configuration Panel`, `Build Queue` and `Build Executor Status` panels
+- Top `Header` can be used to login / logout / search / enable auto refresh etc.
+
+**Configuration Panel**
+
+- `New Item` is used to add a new job
+- `People` is used to manage users
+- `Build History` shows all the builds history on master or slave nodes
+- `Manage Jenkins` is the main page for doing all Jenkins configurations
+- `My Views` can be used to provide a customized view for each user where only selected jobs can be displayed
+
+**_Create our first Jenkins job_**
 
