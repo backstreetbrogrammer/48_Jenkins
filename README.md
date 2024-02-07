@@ -16,9 +16,9 @@ Tools used:
     - [Continuous Integration Overview](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#continuous-integration-overview)
     - [Install Jenkins](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#install-jenkins)
     - [Jenkins Overview](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#jenkins-overview)
-2. Continuous Delivery With Jenkins
-3. Jenkins Pipeline
-4. Jenkins With Docker
+2. [Maven-Based Jenkins Job](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#chapter-02-continuous-integration-with-jenkins)
+3. Continuous Delivery With Jenkins
+4. Jenkins Pipeline
 
 ---
 
@@ -177,9 +177,63 @@ Jenkins is very popular because:
 
 - `New Item` is used to add a new job
 - `People` is used to manage users
-- `Build History` shows all the builds history on master or slave nodes
+- `Build History` shows all the build history on master or slave nodes
 - `Manage Jenkins` is the main page for doing all Jenkins configurations
 - `My Views` can be used to provide a customized view for each user where only selected jobs can be displayed
 
 **_Create our first Jenkins job_**
+
+- Click on `Create a job` on Dashboard
+- In the `Enter an item name` text box, write the job name as: `first-jenkins-job`
+- Click on `Freestyle project` and press `OK` button
+- Job's `Configuration` page will open with first tab as `General`
+- In `Description` text box, we can write: `This is our first Jenkins job`
+- For now, we will keep `Source Code Management` as `None`
+- We will keep `Build Triggers` and `Build Environment` sections empty, i.e., we will trigger the build **manually**
+- In the `Build Steps` section, click on `Add build step`
+- Choose `Execute Windows batch command` on Windows, OR, choose `Execute shell` on MacOS / Linux
+- Write the `Command`: `echo "Hello Guidemy students!!"`
+- Click on `Save` button and our first job is created
+
+**_Run our first Jenkins job_**
+
+- Click the `Dashboard` and we will see our `first-jenkins-job` listed
+- Click the right-most `play` button to build the job
+- Click the `first-jenkins-job` and it will display our first build on the left pane in `Build History`
+- Build job `#1` marked as green tick means its successful
+- Click on `#1` -> `Console Output` to see the output
+
+![OutputFirstJob](OutputFirstJob.PNG)
+
+---
+
+## Chapter 02. Maven-Based Jenkins Job
+
+We will create a maven-based jenkins job:
+
+- check out source code from GitHub
+- compile the code
+- run the test
+- package the application
+
+**_Configure Java, Git and Maven in Jenkins_**
+
+- Download and install `Git` (if not already installed) from [Git Downloads](https://git-scm.com/downloads)
+- In Jenkins Dashboard, click `Manage Jenkins` -> `Plugins`
+- We can search `GitHub` plugin and install it
+- `GitHub` plugin will be showing up in `Installed` plugins
+- Download and install `Maven` (if not already installed) from [Maven Downloads](https://maven.apache.org/download.cgi)
+- In Jenkins Dashboard, click `Manage Jenkins` -> `Tools`
+- In `JDK installations`, click `Add JDK` button
+- Put `Name` as `localJDK` and `JAVA_HOME` as `C:\Program Files\Java\jdk1.8.0_202`
+- In `Git installations`, put `Name` as `localGit` and keep `path` as default `git.exe`
+- In `Maven installations`, click `Add Maven` button
+- Put `Name` as `localMaven` and `MAVEN_HOME` as `C:\Maven\apache-maven-3.9.4`
+- Click on `Save` button, and we have configured our Java, Git and Maven installations
+
+
+
+
+
+
 
