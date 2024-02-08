@@ -209,7 +209,25 @@ Jenkins is very popular because:
 
 ## Chapter 02. Maven-Based Jenkins Job
 
-We will create a maven-based jenkins job:
+**Different Phases in Maven Build Lifecycle**
+
+- **clean**: Delete all the target folders containing compiled binaries.
+- **validate**: Validate the project is correct, and all necessary information is available.
+- **compile**: Compile the source code of the project.
+- **test**: Test the compiled source code using a suitable unit testing framework.
+- **package**: Take the compiled code and package it in its distributable format.
+- **verify**: Run any checks on results of integration tests to ensure quality criteria are met.
+- **install**: Install the package into the local repository, for use as a dependency in other projects locally.
+- **deploy**: Copy the final package to the remote repository for sharing with other developers and projects.
+
+**Maven Build Phases**
+
+- These lifecycle phases are executed **sequentially** to complete the default lifecycle.
+- We want to specify the `maven clean package` command; this command would execute each default life cycle phase in
+  order including `validate`, `compile`, `test` before executing package.
+- We only need to call the **last** build phase to be executed.
+
+We will create a maven-based jenkins job which will:
 
 - check out source code from GitHub
 - compile the code
@@ -225,13 +243,33 @@ We will create a maven-based jenkins job:
 - Download and install `Maven` (if not already installed) from [Maven Downloads](https://maven.apache.org/download.cgi)
 - In Jenkins Dashboard, click `Manage Jenkins` -> `Tools`
 - In `JDK installations`, click `Add JDK` button
-- Put `Name` as `localJDK` and `JAVA_HOME` as `C:\Program Files\Java\jdk1.8.0_202`
+- Put `Name` as `localJDK` and `JAVA_HOME` as `C:\Program Files\Java\jdk-11.0.11`
 - In `Git installations`, put `Name` as `localGit` and keep `path` as default `git.exe`
 - In `Maven installations`, click `Add Maven` button
 - Put `Name` as `localMaven` and `MAVEN_HOME` as `C:\Maven\apache-maven-3.9.4`
 - Click on `Save` button, and we have configured our Java, Git and Maven installations
 
+**_Create maven project job_**
 
+- Click on `Create a job` on Dashboard
+- In the `Enter an item name` text box, write the job name as: `maven-project`
+- Click on `Freestyle project` and press `OK` button
+- Job's `Configuration` page will open with first tab as `General`
+- In `Description` text box, we can write: `This is our first maven project`
+- In `Source Code Management`, use `Git`
+- In Repository URL, type: `https://github.com/jenkins-docs/simple-java-maven-app.git`
+- We will keep `Build Triggers` and `Build Environment` sections empty, i.e., we will trigger the build **manually**
+- In the `Build Steps` section, click on `Add build step` -> `Invoke top-level Maven targets`
+- Use `Maven Version` as `localMaven` and `Goals` as `clean package`
+- Click on `Save` button
+
+**_Run maven project job_**
+
+- Click the `Dashboard` and we will see our `maven-project` listed
+- Click the right-most `play` button to build the job
+- Click the `maven-project` and it will display our first build on the left pane in `Build History`
+- Build job `#1` marked as green tick means its successful
+- Click on `#1` -> `Console Output` to see the output
 
 
 
