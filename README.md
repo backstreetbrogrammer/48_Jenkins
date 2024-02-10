@@ -16,8 +16,8 @@ Tools used:
     - [Continuous Integration Overview](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#continuous-integration-overview)
     - [Install Jenkins](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#install-jenkins)
     - [Jenkins Overview](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#jenkins-overview)
-2. [Maven-Based Jenkins Job](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#chapter-02-continuous-integration-with-jenkins)
-3. Continuous Inspection With Jenkins
+2. [Maven-Based Jenkins Job](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#chapter-02-maven-based-jenkins-job)
+3. [Continuous Inspection With Jenkins](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#chapter-03-continuous-inspection-with-jenkins)
 4. Continuous Delivery With Jenkins
 5. Jenkins Pipeline
 
@@ -370,3 +370,4 @@ All the details for setup is here: `https://plugins.jenkins.io/github/`
 ---
 
 ## Chapter 03. Continuous Inspection With Jenkins
+
