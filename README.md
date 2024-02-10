@@ -17,8 +17,9 @@ Tools used:
     - [Install Jenkins](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#install-jenkins)
     - [Jenkins Overview](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#jenkins-overview)
 2. [Maven-Based Jenkins Job](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#chapter-02-continuous-integration-with-jenkins)
-3. Continuous Delivery With Jenkins
-4. Jenkins Pipeline
+3. Continuous Inspection With Jenkins
+4. Continuous Delivery With Jenkins
+5. Jenkins Pipeline
 
 ---
 
@@ -271,7 +272,101 @@ We will create a maven-based jenkins job which will:
 - Build job `#1` marked as green tick means its successful
 - Click on `#1` -> `Console Output` to see the output
 
+**_Source control polling_**
 
+We should understand **Cron syntax** to learn more about SCM polling in Jenkins.
 
+In Cron, each line consists of **five** fields separated by **TAB** or **whitespace**.
 
+![CronSyntax](CronSyntax.PNG)
 
+To specify multiple values for one field:
+
+- `*`: all valid values
+- `M-N`: a range of values
+- `M-N/X` or `*/X`: steps by intervals of `X` through the specified range or whole valid range
+- `A,C,Z`: enumerates multiple values
+
+Examples:
+
+```
+# every day at midnight
+0 0 * * *
+
+# 2 am, 3 am and 4 am every day
+0 2-4 * * *
+
+# Every fifteen minutes (perhaps at :07, :22, :37, :52):
+H/15 * * * *
+
+# Every ten minutes in the first half of every hour (three times, perhaps at :04, :14, :24):
+H(0-29)/10 * * * *
+
+# Once every two hours at 45 minutes past the hour starting at 9:45 AM and finishing at 3:45 PM every weekday:
+45 9-16/2 * * 1-5
+
+# Once in every two hour slot between 8 AM and 4 PM every weekday (perhaps at 9:38 AM, 11:38 AM, 1:38 PM, 3:38 PM):
+H H(8-15)/2 * * 1-5
+
+# Once a day on the 1st and 15th of every month except December:
+H H 1,15 1-11 *
+```
+
+Let's configure our `maven-project` to trigger build whenever there is any change committed to the GitHub repository.
+
+- Navigate to `maven-project` -> `Configure` -> `Build Triggers`
+- Check `Poll SCM` checkbox and put following cron in `Schedule`:
+
+```
+* * * * *
+```
+
+- This cron means whenever any change is committed to GitHub, Jenkins build will be triggered **immediately**
+- Click on **Save** button
+- Now we will see a new `Git Polling Log` which will show the logs
+
+**_Other Build Triggers_**
+
+**Trigger builds remotely (e.g., from scripts)**
+
+Enable this option if we would like to trigger new builds by accessing a special predefined URL (convenient for
+scripts).
+
+- In the `Authentication` text box, put token as `GUIDEMY`
+- Copy the URL specified: `JENKINS_URL/job/maven-project/build?token=TOKEN_NAME`
+- Replace `JENKINS_URL` with `http://localhost:8080` and TOKEN_NAME with `GUIDEMY`
+- Click on `Save` button
+- Launch the URL in browser: `http://localhost:8080/job/maven-project/build?token=GUIDEMY`
+- We will see a new build triggered in `Build History` for our `maven-project`
+
+**Build after other projects are built**
+
+Set up a trigger so that when some other projects finish building, a new build is scheduled for this project. This is
+convenient for running an extensive test after a build is complete, for example.
+
+**Build periodically**
+
+Provides a `cron-like` feature to periodically execute this project.
+
+This feature is primarily for using Jenkins as a cron replacement, and it is not ideal for continuously building
+software projects.
+
+**GitHub hook trigger for GITScm polling**
+
+This is the ideal settings used in production.
+
+When Jenkins receives a GitHub push hook, GitHub Plugin checks to see whether the hook came from a GitHub repository
+which matches the Git repository defined in the SCM/Git section of this job.
+
+If they match and this option is enabled, GitHub Plugin triggers a one-time polling on GITScm.
+
+When GITScm polls GitHub, it finds that there is a change and initiates a build.
+
+The last sentence describes the behavior of Git plugin, thus the polling and initiating the build is not a part of
+GitHub plugin.
+
+All the details for setup is here: `https://plugins.jenkins.io/github/`
+
+---
+
+## Chapter 03. Continuous Inspection With Jenkins
