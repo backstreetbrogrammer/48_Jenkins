@@ -371,3 +371,39 @@ All the details for setup is here: `https://plugins.jenkins.io/github/`
 
 ## Chapter 03. Continuous Inspection With Jenkins
 
+Jenkins can be used to integrate **checkstyle** reports for code quality metrics.
+
+Checkstyle is a **code static analysis tool** to help programmers to write Java code that adheres to a coding standard
+such as:
+
+- Avoiding multiple blank lines
+- Removing unused variables
+- Enforcing correct indentations
+- etc.
+
+Checkstyle is highly configurable and can be made to support almost any coding standard. An example configuration files
+are supplied supporting the
+[Sun Code Conventions](https://checkstyle.org/styleguides/sun-code-conventions-19990420/CodeConvTOC.doc.html),
+[Google Java Style](https://checkstyle.sourceforge.io/styleguides/google-java-style-20180523/javaguide.html).
+
+**_Configuring Checkstyle Plugin in Jenkins_**
+
+[Checkstyle Jenkins Plugin](https://github.com/jenkinsci/checkstyle-plugin) has been deprecated.
+
+However, all functionality has been integrated into the
+[Warnings Next Generation Plugin](https://github.com/jenkinsci/warnings-ng-plugin) and the
+[Static Analysis Model and Parsers Library](https://github.com/jenkinsci/analysis-model).
+
+- In Jenkins Dashboard, click `Manage Jenkins` -> `Plugins`
+- Search for `Warnings` and install
+- This will install **Warnings Next Generation Plugin** and **Static Analysis Model and Parsers Library**
+- Navigate to `maven-project` -> `Configure` -> `Build Steps`
+- In our `localMaven`, set `Goals` as `clean package checkstyle:checkstyle`
+- In `Post-build Actions`, choose `Record compiler warnings and static analysis results` and Tool as `CheckStyle`
+- Click on `Save` button and trigger a build manually
+- Once the build is successful, we can click the build tag
+- There is a new `Checkstyle Warnings` tab which on clicking will give the complete checkstyle report
+
+**Exercise**: Add a new plugin **Report Info**
+
+> A view with some information from Surefire, PMD, Findbugs and Checkstyle reports.
