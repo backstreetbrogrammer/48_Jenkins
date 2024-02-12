@@ -407,3 +407,54 @@ However, all functionality has been integrated into the
 **Exercise**: Add a new plugin **Report Info**
 
 > A view with some information from Surefire, PMD, Findbugs and Checkstyle reports.
+
+**_Integration with Gradle_**
+
+- Similar to Maven, Gradle is an open source build tool for the Java Virtual Machine
+- Build scripts for Gradle are written in a **Domain Specific Language** based on Groovy
+- The concise nature of Groovy scripting lets us write very expressive build scripts with very little code
+- In Jenkins Dashboard, click `Manage Jenkins` -> `Plugins`
+- Search for `Gradle` and install `Gradle Plugin`
+- Now similar to maven-based project job, we can create a gradle-based project job
+
+**_Integration with Shell_**
+
+Jenkins has in-built support for bash shell.
+
+For MacOS and Linux systems, we can use shell commands or scripts for build steps.
+
+- In the project -> `Configure` -> `Build Steps`, we can use `Execute Shell`
+- Runs a shell script (defaults to `sh`, but this is configurable) for building the project
+- The script will be run with the workspace as the current directory
+
+As the best practice, we should not put a long shell script in here.
+
+Instead, we should add the shell script in SCM and simply call that shell script from Jenkins (via
+`bash -ex myscript.sh` or something like that).
+
+---
+
+## Chapter 04. Continuous Delivery With Jenkins
+
+![ContinuousIntegration](ContinuousIntegration.PNG)
+
+We need to automate the deployment of artifacts to the test environment for Quality Assurance.
+
+This can be done in `Post-build Actions` in Jenkins.
+
+- Navigate to `maven-project` -> `Configure` -> `Post-build Actions`
+- Add post-build action as `Archive the artifacts`
+- Files to archive: either use `**/*.jar` or `target/*.jar`
+- Click on `Save` button and trigger a new build manually
+- Click on the build tag and we will see `Build Artifacts` being deployed
+
+![BuildArtifacts](BuildArtifacts.PNG)
+
+**_Deploy to Staging_**
+
+We need to install plugins:
+
+- Copy Artifact
+- Deploy to container
+
+
