@@ -18,8 +18,9 @@ Tools used:
     - [Jenkins Overview](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#jenkins-overview)
 2. [Maven-Based Jenkins Job](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#chapter-02-maven-based-jenkins-job)
 3. [Continuous Inspection With Jenkins](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#chapter-03-continuous-inspection-with-jenkins)
-4. Continuous Delivery With Jenkins
-5. Jenkins Pipeline
+4. [Continuous Delivery With Jenkins](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#chapter-04-continuous-delivery-with-jenkins)
+    - [Jenkins Build Pipeline](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#jenkins-build-pipeline)
+5. [Jenkins Pipeline As Code](https://github.com/backstreetbrogrammer/48_Jenkins?tab=readme-ov-file#chapter-05-jenkins-pipeline-as-code)
 
 ---
 
@@ -457,4 +458,95 @@ We need to install plugins:
 - Copy Artifact
 - Deploy to container
 
+Once the plugins are installed, create a new free-style project in Jenkins: `deploy-to-staging`.
+
+- In the configuration, add a build step as: `Copy artifacts from another project`
+- Add the project name as `maven-project` and artifacts to copy as `**/*.jar`
+- `Target directory` can be used to deploy to a particular directory
+
+Let's reconfigure our `maven-project` to create a pipeline with `deploy-to-staging`.
+
+- In the configuration, add a post-build action as: `Build other projects`
+- Add `deploy-to-staging` in projects to build
+- Trigger only if build is stable
+
+**Demo pipeline run:**
+
+- Trigger build for `maven-project`
+- As soon as the `maven-project` is built, `deploy-to-staging` build will be triggered automatically
+- Checking the Workspace of `deploy-to-staging`, our artifacts are deployed here
+
+**NOTE**: we can use `Publish Over SSH` plugin or `Publish Over FTP` plugin to deploy the same artifacts to staging
+server (on Linux).
+
+### Jenkins Build Pipeline
+
+Currently, we have a basic pipeline created where we have our `maven-project` as **upstream** job to compile, test
+and package our artifactory which triggers automated `deploy-to-staging` **downstream** job to deploy to a server.
+
+In the real production-based projects, we may have many numbers of builds interlinked to each other which may lead to  
+complexity.
+
+Thus, we need to install `Build Pipeline` plugin to manage complex builds.
+
+![BuildPipeline](BuildPipeline.PNG)
+
+**Create a new build pipeline view**
+
+- Go to the `Dashboard` and click on `+` sign, next to the `All` button
+- Give the view name as `build pipeline`
+- Click on `Build Pipeline View` and `Create`
+- In `Select Initial Job`, select `maven-project` and click `OK`
+
+We will see our pipeline view as:
+
+![BuildPipelineProject](BuildPipelineProject.PNG)
+
+Now triggering the `Run` command button, we can see our pipeline builds in action.
+
+**_Parallel Jenkins Build_**
+
+In our `maven-project` as **upstream** job, we are doing maven compile, test, package and **checkstyle** and then
+deploy to staging environment.
+
+Checkstyle may take a lot of time, and thus, it can be run in parallel with deployment of artifacts to staging
+environment.
+
+![ParallelPipeline](ParallelPipeline.PNG)
+
+- Go to configuration of `maven-project` and change `Build Steps` -> `Maven Goals` from
+  `clean package checkstyle:checkstyle` to `clean package`
+- Create a new free-style job as `static-analysis`
+- Put the SCM to the same Git repository: `https://github.com/jenkins-docs/simple-java-maven-app.git`
+- Add a build step as: `Invoke top-level Maven targets`
+- Chose the `localMaven` and set `Goals` as: `checkstyle:checkstyle`
+- Click on `Save` button
+- Go to configuration of `maven-project` and in post-build actions, add `static-analysis` project for projects to
+  build (comma separated): `deploy-to-staging,static-analysis,`
+
+Going to `build pipeline` view in the Dashboard, we can see `static-analysis` job in the pipeline in parallel.
+
+Trigger the `Run` command to see the whole parallel pipeline in action.
+
+**_Deploy to Production_**
+
+**EXTRAS**
+
+Most useful Plugins for Jenkins are listed:
+
+- Git Plugin
+- Kubernetes Plugin
+- GitHub Integration Plugin
+- Pipeline Plugin
+- Docker Plugin
+- JUnit Plugin
+- Credentials Plugin
+- Monitoring Plugin
+- Easy Installation Feature
+- Jira Plugin
+- Slack Notification Plugin
+- Maven Plugin
+- Amazon EC2 Plugin
+- Mailer Plugin
+- Green Balls Plugin
 
