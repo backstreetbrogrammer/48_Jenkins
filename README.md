@@ -664,9 +664,116 @@ Console output will display all the three echo messages as written in the script
 - In the Pipeline, chose `Pipeline script from SCM` and chose SCM as `Git`
 - Repository:`https://github.com/risrivas/simple-java-maven-app.git`
 - Script path as `jenkins/Jenkinsfile`
+
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                bat 'mvn -B -DskipTests clean package'
+            }
+        }
+        stage('Test') {
+            steps {
+                bat 'mvn test'
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }
+        }
+        stage('Deliver') {
+            steps {
+                bat "copy target\\my-app-1.0-SNAPSHOT.jar ."
+            }
+        }
+    }
+}
+```
+
 - Click `Save` and build the job
 
 We should be able to see the pipeline run as successful.
 
 ![MavenProjectBuild](MavenProjectBuild.PNG)
+
+The project is saved in local at: `C:\ProgramData\Jenkins\.jenkins\workspace\maven-project-pipeline` and can be seen
+in the Console Output.
+
+**_Reuse previous created jobs_**
+
+We can change the `Deliver` stage to use our pre-defined job: `deploy-to-staging`
+
+```groovy
+        stage('Deliver') {
+    steps {
+        build job: 'deploy-to-staging'
+    }
+}
+```
+
+Now, when we build our `maven-project-pipeline` job, it will trigger `deploy-to-staging` job when successful.
+
+Let's add `deploy-to-prod` job as well.
+
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                bat 'mvn -B -DskipTests clean package'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                bat 'mvn test'
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }
+        }
+
+        stage('Deploy to Staging') {
+            steps {
+                build job: 'deploy-to-staging'
+            }
+        }
+
+        stage('Deploy to Production') {
+            steps {
+                timeout(time: 5, unit: 'DAYS') {
+                    input message: 'Approve PRODUCTION Deployment?'
+                }
+
+                build job: 'deploy-to-prod'
+            }
+            post {
+                success {
+                    echo 'Code deployed to Production.'
+                }
+
+                failure {
+                    echo 'Deployment failed.'
+                }
+            }
+        }
+    }
+}
+```
+
+- Build the job `maven-project-pipeline`
+- Once build is successful, it will build `deploy-to-staging` job
+- Once `deploy-to-staging` job is successful, it will `Pause for Input` to trigger `deploy-to-prod` job
+
+![PauseForInput](PauseForInput.PNG)
+
+- Click on `Proceed` button and it will build `deploy-to-prod` job
+
+Similarly, we can add `Checkstyle stage` which will be left as an exercise for the students.
 
