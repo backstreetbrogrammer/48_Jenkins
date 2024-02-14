@@ -530,23 +530,143 @@ Trigger the `Run` command to see the whole parallel pipeline in action.
 
 **_Deploy to Production_**
 
+We do not want to deploy to production **automatically** but instead, **manually** by the QA manager or the support team
+once the QA test results are good and signed off.
+
+![DeployToProduction](DeployToProduction.PNG)
+
+- Create a new free-style project in Jenkins: `deploy-to-prod`.
+- In the configuration, add a build step as: `Copy artifacts from another project`
+- Add the project name as `maven-project` and artifacts to copy as `**/*.jar`
+- `Target directory` can be used to deploy to a particular directory
+- Click `Save`
+
+Let's reconfigure our `deploy-to-staging` to create a pipeline with `deploy-to-prod`.
+
+- In the configuration, add a post-build action as: `Build other projects (manual step)`
+- Add `deploy-to-prod` in projects to build
+- Click `Save`
+
+Going to `build pipeline` view in the Dashboard, we can see `deploy-to-prod` job at the end of the pipeline.
+
+![DeployToProductionPipeline](DeployToProductionPipeline.PNG)
+
+**Demo pipeline run:**
+
+- Trigger build for `maven-project`
+- As soon as the `maven-project` is built, `deploy-to-staging` and `static-analysis` jobs build will be triggered
+  automatically
+- As `deploy-to-prod` job needs to be triggered manually, we can click on `Run` manually
+
+**NOTE**: we can use `Publish Over SSH` plugin or `Publish Over FTP` plugin to deploy the same artifacts to staging
+server (on Linux).
+
 **EXTRAS**
 
 Most useful Plugins for Jenkins are listed:
 
 - Git Plugin
-- Kubernetes Plugin
 - GitHub Integration Plugin
 - Pipeline Plugin
-- Docker Plugin
-- JUnit Plugin
+- Publish Over SSH
+- Publish Over FTP
+- Maven Plugin
 - Credentials Plugin
 - Monitoring Plugin
-- Easy Installation Feature
-- Jira Plugin
-- Slack Notification Plugin
-- Maven Plugin
+- Docker Plugin
+- Kubernetes Plugin
+- JUnit Plugin
 - Amazon EC2 Plugin
+- Jira Plugin
+- Easy Installation Feature
+- Slack Notification Plugin
 - Mailer Plugin
 - Green Balls Plugin
+
+---
+
+## Chapter 05. Jenkins Pipeline As Code
+
+In this section, we will talk through one of Jenkins' most powerful features: **Pipeline as Code**.
+
+We would see how we convert our existing **Jenkins pipeline** to a `Jenkinsfile` and get our Jenkins workflow fully
+automated.
+
+Benefits of a code-based pipeline:
+
+- **Version control** - in SCM like GitHub, we can write a `Jenkinsfile` manually, which we can commit to our project's
+  source control repository
+- **Best Practices** - as it is less error-prone execution of jobs
+- **Logic-based execution of steps** - uses Groovy like DSL syntax which supports conditional expressions and executions
+
+We need to ensure that we have `Pipeline` plugin installed.
+
+Let's create our first Jenkins code-based pipeline job.
+
+- Create a new **Pipeline** project in Jenkins: `hello-world-pipeline`
+- Use the below `Jenkinsfile` script
+
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage('Stage 1') {
+            steps {
+                echo 'Hello world!'
+            }
+        }
+    }
+}
+```
+
+- Click `Save` and run the job
+
+![FirstPipeline](FirstPipeline.PNG)
+
+- Checking the console output of the build, we can see `Hello world!` printed
+
+Let's modify the script to add **more stages**.
+
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage('Init') {
+            steps {
+                echo 'Initializing...'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Building...'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Code deployed.'
+            }
+        }
+    }
+}
+```
+
+Now, running the job will display three stages:
+
+![MultiStages](MultiStages.PNG)
+
+Console output will display all the three echo messages as written in the script.
+
+**_Automate our existing project_**
+
+- Create a new **Pipeline** project in Jenkins: `maven-project-pipeline`
+- In the Pipeline, chose `Pipeline script from SCM` and chose SCM as `Git`
+- Repository:`https://github.com/risrivas/simple-java-maven-app.git`
+- Script path as `jenkins/Jenkinsfile`
+- Click `Save` and build the job
+
+We should be able to see the pipeline run as successful.
+
+![MavenProjectBuild](MavenProjectBuild.PNG)
 
